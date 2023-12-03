@@ -1,5 +1,7 @@
 # Running Roboboat Simulation 2023 (for 2024)
 
+> Tested on Ubuntu 22.04
+
 Go to this [repo](https://gitlab.com/SimLE/SeaSentinel/sese-sim-docker)
 Run the following
 
