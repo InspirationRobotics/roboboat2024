@@ -1,6 +1,7 @@
 # Running Roboboat Simulation 2023 (for 2024)
 
 > Tested on Ubuntu 22.04
+> ROS Version: Noetic
 
 Go to this [repo](https://gitlab.com/SimLE/SeaSentinel/sese-sim-docker)
 Run the following
@@ -23,9 +24,9 @@ sudo make build
 Enter bash shell in SITL (Software In the Loop) container
 
 ```bash
-make shell-sitl
+sudo make shell-sitl
 # or if it is running
-docker compose exec sitl /entrypoint.sh bash
+sudo docker compose exec sitl /entrypoint.sh bash
 ```
 
 ## Running
@@ -51,4 +52,12 @@ roslaunch roboboat_gazebo px4.launch world:=task2-gen vehicle:=boat
 
 ```bash
 list-world
+```
+
+### Get ROS Topics
+
+For more commands, see [the documentation](https://wiki.ros.org/rostopic)
+
+```bash
+rostopic list
 ```
