@@ -9,9 +9,9 @@ import numpy as np
 from asv.cv import nav_cv
 
 
-def test_find_red_green():
+def test_find_red_green_sanity():
     """
-    Test the find red & green function
+    Sanity check for find red & green function
     """
     cv = nav_cv.CV()
     
