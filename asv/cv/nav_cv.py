@@ -43,7 +43,7 @@ class CV:
 
         print("[INFO] Bin CV init")
 
-    def find_red_and_green(frame):
+    def find_red_and_green(self, frame):
         """
         Highlight red and green part of the frame
 
@@ -53,7 +53,7 @@ class CV:
             the frame from the camera
         """
         # convert the frame to HSV
-        hsv_frame = cv2.cv2Color(frame, cv2.COLOR_BGR2HSV)
+        hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
         # define the hsv range for red and green
         lower_red: np.int64 = np.array([0,100,100])
@@ -76,7 +76,7 @@ class CV:
         return red_and_green_result
 
     
-    def run(self, frame, target, oakd_data) -> dict:
+    def run(self, frame, target, oakd_data):
         """
         Should be all the code required to run the CV. 
         
@@ -88,7 +88,7 @@ class CV:
         target: could be any type of information, for example the thing to look for
         oakd_data: only applies for Oak-D cameras, this is the list of detections
         """
-        pass
+        return {"lateral": 0, "forward": 0, "end": False}, frame
 
 
 if __name__ == "__main__":

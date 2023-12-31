@@ -53,7 +53,7 @@ class CV:
         target: could be any type of information, for example the thing to look for
         oakd_data: only applies for Oak-D cameras, this is the list of detections
         """
-        pass
+        return {"lateral": 0, "forward": 0, "end": False}, frame
 
 
 if __name__ == "__main__":
