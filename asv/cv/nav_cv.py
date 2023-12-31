@@ -53,14 +53,14 @@ class CV:
             the frame from the camera
         """
         # convert the frame to HSV
-        hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        hsv_frame = cv2.cvtColor(np.float32(frame), cv2.COLOR_BGR2HSV)
 
         # define the hsv range for red and green
-        lower_red: np.int64 = np.array([0,100,100])
-        upper_red: np.int64 = np.array([10,255,255])
+        lower_red: np.float32 = np.array([0,100,100])
+        upper_red: np.float32 = np.array([10,255,255])
 
-        lower_green: np.int64 = np.array([40,40,40])
-        upper_green: np.int64 = np.array([80,255,255])
+        lower_green: np.float32 = np.array([40,40,40])
+        upper_green: np.float32 = np.array([80,255,255])
 
         # create masks for red and green
         red_mask = cv2.inRange(frame, lower_red, upper_red)

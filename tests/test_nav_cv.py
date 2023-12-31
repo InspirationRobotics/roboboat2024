@@ -4,6 +4,7 @@ Test template for unit testing with pytest
 
 # import what you need from within the package
 import pytest
+import numpy as np
 
 from asv.cv import nav_cv
 
@@ -13,14 +14,15 @@ def test_find_red_green():
     Test the find red & green function
     """
     cv = nav_cv.CV()
-    result = cv.find_red_and_green("this is some data")
+    
+    # Create a mock frame (replace this with a more realistic frame)
+    mock_frame = np.zeros((480, 640, 3), dtype=np.uint8)
 
-def test_cv_function():
-    """
-    Test a cv function withing the cv template file
-    """
+    # Call the function
+    result_frame = cv.find_red_and_green(mock_frame)
 
-    # creates a cv template object to test the function
-    cv = nav_cv.CV()
-    result, img_viz = cv.run("this_is_some_data", None, None)
-    assert isinstance(result, dict) and img_viz == "this_is_some_data" 
+    # Assert that the result is not None
+    assert result_frame is not None
+
+    # Assert that the result has the expected shape
+    assert result_frame.shape == mock_frame.shape
