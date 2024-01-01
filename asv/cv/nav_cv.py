@@ -52,29 +52,69 @@ class CV:
         frame
             the frame from the camera
         """
-        # convert the frame to HSV
-        hsv_frame = cv2.cvtColor(np.float32(frame), cv2.COLOR_BGR2HSV)
+        ## Read
+        img = cv2.imread("../../test_data/red-green-buoys.png")
 
-        # define the hsv range for red and green
-        lower_red: np.float32 = np.array([0,100,100])
-        upper_red: np.float32 = np.array([10,255,255])
+        ## convert to hsv
+        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
-        lower_green: np.float32 = np.array([40,40,40])
-        upper_green: np.float32 = np.array([80,255,255])
+        mask_green = cv2.inRange(hsv, (36, 25, 25), (70, 255,255))
+        mask_red1 = cv2.inRange(hsv, (0, 70, 50), (10, 255, 255))
+        mask_red2 = cv2.inRange(hsv, (170, 70, 50), (180, 255, 255))
+        mask_orange = cv2.inRange(hsv, (10, 100, 20), (25, 255, 255))
+        mask_yellow = cv2.inRange(hsv, (21, 39, 64), (40, 255, 255))
 
-        # create masks for red and green
-        red_mask = cv2.inRange(frame, lower_red, upper_red)
-        green_mask = cv2.inRange(frame, lower_green, upper_green)
+        ## slice the red and orange
+        imask_red1 = mask_red1>0
+        imask_red2 = mask_red2>0
+        imask_orange = mask_orange>0
+        imask_yellow = mask_yellow>0
+        red = np.zeros_like(img, np.uint8)
+        red[imask_red1] = img[imask_red1]
+        red[imask_red2] = img[imask_red2]
+        red[imask_orange] = img[imask_orange]
+        red[imask_yellow] = img[imask_yellow]
 
-        # apply the masks to the original frames
-        red_result = cv2.bitwise_and(frame, frame, mask=red_mask)
-        green_result = cv2.bitwise_and(frame, frame, mask=green_mask)
-        
-        # Combine the results to get a frame with both red and green highlighted
-        red_and_green_result = cv2.addWeighted(red_result, 1, green_result, 1, 0)
+        ## slice the green
+        imask_green = mask_green>0
+        green = np.zeros_like(img, np.uint8)
+        green[imask_green] = img[imask_green]
+
+        red_and_green_result = cv2.addWeighted(red, 1, green, 1, 0)
 
         return red_and_green_result
 
+    # def overlay(image, mask, color, alpha, resize=None):
+    #     """Combines image and its segmentation mask into a single image.
+    #     https://www.kaggle.com/code/purplejester/showing-samples-with-segmentation-mask-overlay
+
+    #     Parameters
+    #     ----------
+    #     image: Training image. np.ndarray,
+    #     mask: Segmentation mask. np.ndarray,
+    #     color: Color for segmentation mask rendering.  tuple[int, int, int] = (255, 0, 0)
+    #     alpha: Segmentation mask's transparency. float = 0.5,
+    #     resize: If provided, both image and its mask are resized before blending them together.
+    #     tuple[int, int] = (1024, 1024))
+
+    #     Returns
+    #     -------
+    #     image_combined: The combined image. np.ndarray
+
+    #     """
+    #     color = color[::-1]
+    #     colored_mask = np.expand_dims(mask, 0).repeat(3, axis=0)
+    #     colored_mask = np.moveaxis(colored_mask, 0, -1)
+    #     masked = np.ma.MaskedArray(image, mask=colored_mask, fill_value=color)
+    #     image_overlay = masked.filled()
+
+    #     if resize is not None:
+    #         image = cv2.resize(image.transpose(1, 2, 0), resize)
+    #         image_overlay = cv2.resize(image_overlay.transpose(1, 2, 0), resize)
+
+    #     image_combined = cv2.addWeighted(image, 1 - alpha, image_overlay, alpha, 0)
+
+    #     return image_combined
     
     def run(self, frame, target, oakd_data):
         """
@@ -113,6 +153,10 @@ if __name__ == "__main__":
 
     cv2.imshow('image', result)
     cv2.waitKey(0)
+
+    # image_with_masks = cv.overlay(result, img, color=np.array([0,255,0]), alpha=0.3)
+    # cv2.imshow('image', image_with_masks)
+    # cv2.waitKey(0)
 
 
     # while True:
