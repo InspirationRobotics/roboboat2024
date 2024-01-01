@@ -55,7 +55,7 @@ class CV:
         ## convert to hsv
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        mask_green = cv2.inRange(hsv, (36, 25, 25), (70, 255, 255))
+        mask_green = cv2.inRange(hsv, (36, 25, 25), (90, 255, 255))
         mask_red1 = cv2.inRange(hsv, (0, 70, 50), (10, 255, 255))
         mask_red2 = cv2.inRange(hsv, (170, 70, 50), (180, 255, 255))
         mask_orange = cv2.inRange(hsv, (10, 100, 20), (25, 255, 255))
@@ -141,7 +141,7 @@ if __name__ == "__main__":
     cv = CV()
 
     # read in image
-    img = cv2.imread("./test_data/red-green-buoys.png")
+    img = cv2.imread("./test_data/red-green-buoys2.jpg")
     cv2.imshow("My Image", img)
 
     # image shows until you press any key
