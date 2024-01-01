@@ -30,6 +30,6 @@ setuptools.setup(
         ],
         "cv": [
             "opencv-python",
-        ]
+        ],
     },
 )

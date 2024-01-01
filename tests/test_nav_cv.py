@@ -14,7 +14,7 @@ def test_find_red_green_sanity():
     Sanity check for find red & green function
     """
     cv = nav_cv.CV()
-    
+
     # Create a mock frame (replace this with a more realistic frame)
     mock_frame = np.zeros((480, 640, 3), dtype=np.uint8)
 

@@ -24,7 +24,7 @@ class CV:
 
         Parameters
         ----------
-        config: dict 
+        config: dict
             Contains config of the sub
 
         Returns
@@ -36,7 +36,6 @@ class CV:
         if self.current_sub == "onyx":
             self.camera = "/auv/camera/videoOAKdRawBottom"
             self.model = "bins3"
-        
 
         self.viz_frame = None
         self.error_buffer = []
@@ -56,17 +55,17 @@ class CV:
         ## convert to hsv
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        mask_green = cv2.inRange(hsv, (36, 25, 25), (70, 255,255))
+        mask_green = cv2.inRange(hsv, (36, 25, 25), (70, 255, 255))
         mask_red1 = cv2.inRange(hsv, (0, 70, 50), (10, 255, 255))
         mask_red2 = cv2.inRange(hsv, (170, 70, 50), (180, 255, 255))
         mask_orange = cv2.inRange(hsv, (10, 100, 20), (25, 255, 255))
         mask_yellow = cv2.inRange(hsv, (21, 39, 64), (40, 255, 255))
 
         ## slice the red and orange
-        imask_red1 = mask_red1>0
-        imask_red2 = mask_red2>0
-        imask_orange = mask_orange>0
-        imask_yellow = mask_yellow>0
+        imask_red1 = mask_red1 > 0
+        imask_red2 = mask_red2 > 0
+        imask_orange = mask_orange > 0
+        imask_yellow = mask_yellow > 0
         red = np.zeros_like(img, np.uint8)
         red[imask_red1] = img[imask_red1]
         red[imask_red2] = img[imask_red2]
@@ -74,7 +73,7 @@ class CV:
         red[imask_yellow] = img[imask_yellow]
 
         ## slice the green
-        imask_green = mask_green>0
+        imask_green = mask_green > 0
         green = np.zeros_like(img, np.uint8)
         green[imask_green] = img[imask_green]
 
@@ -113,11 +112,11 @@ class CV:
     #     image_combined = cv2.addWeighted(image, 1 - alpha, image_overlay, alpha, 0)
 
     #     return image_combined
-    
+
     def run(self, frame, target, oakd_data):
         """
-        Should be all the code required to run the CV. 
-        
+        Should be all the code required to run the CV.
+
         Could be a loop, grabbing frames using ROS, etc.
 
         Parameters
@@ -133,7 +132,7 @@ if __name__ == "__main__":
     """
     Testing purposes only
     ----------
-    If you run this file directly, the following code will be executed 
+    If you run this file directly, the following code will be executed
 
     Run "python -m auv.cv.template_cv"
     """
@@ -143,19 +142,18 @@ if __name__ == "__main__":
 
     # read in image
     img = cv2.imread("./test_data/red-green-buoys.png")
-    cv2.imshow('My Image', img)
+    cv2.imshow("My Image", img)
 
     # image shows until you press any key
     cv2.waitKey(0)
     result = cv.find_red_and_green(img)
 
-    cv2.imshow('image', result)
+    cv2.imshow("image", result)
     cv2.waitKey(0)
 
     # image_with_masks = cv.overlay(result, img, color=np.array([0,255,0]), alpha=0.3)
     # cv2.imshow('image', image_with_masks)
     # cv2.waitKey(0)
-
 
     # while True:
     #     # grab a frame

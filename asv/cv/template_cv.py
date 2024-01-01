@@ -22,7 +22,7 @@ class CV:
 
         Parameters
         ----------
-        config: dict 
+        config: dict
             Contains config of the sub
 
         Returns
@@ -34,17 +34,16 @@ class CV:
         if self.current_sub == "onyx":
             self.camera = "/auv/camera/videoOAKdRawBottom"
             self.model = "bins3"
-        
 
         self.viz_frame = None
         self.error_buffer = []
 
         print("[INFO] Bin CV init")
-    
+
     def run(self, frame, target, oakd_data):
         """
-        Should be all the code required to run the CV. 
-        
+        Should be all the code required to run the CV.
+
         Could be a loop, grabbing frames using ROS, etc.
 
         Parameters
@@ -60,7 +59,7 @@ if __name__ == "__main__":
     """
     Testing purposes only
     ----------
-    If you run this file directly, the following code will be executed 
+    If you run this file directly, the following code will be executed
 
     Run "python -m auv.cv.template_cv"
     """
