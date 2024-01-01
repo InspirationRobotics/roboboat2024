@@ -52,11 +52,9 @@ class CV:
         frame
             the frame from the camera
         """
-        ## Read
-        img = cv2.imread("../../test_data/red-green-buoys.png")
 
         ## convert to hsv
-        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
         mask_green = cv2.inRange(hsv, (36, 25, 25), (70, 255,255))
         mask_red1 = cv2.inRange(hsv, (0, 70, 50), (10, 255, 255))
@@ -144,7 +142,7 @@ if __name__ == "__main__":
     cv = CV()
 
     # read in image
-    img = cv2.imread("../../test_data/red-green-buoys.png")
+    img = cv2.imread("./test_data/red-green-buoys.png")
     cv2.imshow('My Image', img)
 
     # image shows until you press any key
