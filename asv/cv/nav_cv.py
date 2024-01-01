@@ -64,7 +64,7 @@ class CV:
 
         # create masks for red and green
         red_mask = cv2.inRange(frame, lower_red, upper_red)
-        green_mask = cv2.inRange(frame, lower_red, upper_red)
+        green_mask = cv2.inRange(frame, lower_green, upper_green)
 
         # apply the masks to the original frames
         red_result = cv2.bitwise_and(frame, frame, mask=red_mask)
@@ -103,22 +103,31 @@ if __name__ == "__main__":
     # Create a CV object with arguments
     cv = CV()
 
-    # here you can for example initialize your camera, etc
-    cap = cv2.VideoCapture("../../testing_data/")
+    # read in image
+    img = cv2.imread("../../test_data/red-green-buoys.png")
+    cv2.imshow('My Image', img)
 
-    while True:
-        # grab a frame
-        ret, frame = cap.read()
-        if not ret:
-            break
+    # image shows until you press any key
+    cv2.waitKey(0)
+    result = cv.find_red_and_green(img)
 
-        # run the cv
-        result = cv.run(frame, "some_info", None)
+    cv2.imshow('image', result)
+    cv2.waitKey(0)
 
-        # do something with the result
-        print(f"[INFO] {result}")
 
-        # debug the frame
-        cv2.imshow("frame", frame)
-        if cv2.waitKey(1) & 0xFF == ord("q"):
-            break
+    # while True:
+    #     # grab a frame
+    #     ret, frame = cap.read()
+    #     if not ret:
+    #         break
+
+    #     # run the cv
+    #     result = cv.run(frame, "some_info", None)
+
+    #     # do something with the result
+    #     print(f"[INFO] {result}")
+
+    #     # debug the frame
+    #     cv2.imshow("frame", frame)
+    #     if cv2.waitKey(1) & 0xFF == ord("q"):
+    #         break
