@@ -25,6 +25,6 @@
 .pytest_cache
 
 
-*/build
-*/install
-*/log
+/build
+/install
+/log
