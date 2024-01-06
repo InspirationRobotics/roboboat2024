@@ -1,6 +1,10 @@
 # roboboat2024
 
-> `ROS2` does not work with `conda` ([source 👀](https://docs.ros.org/en/rolling/How-To-Guides/Installation-Troubleshooting.html#anaconda-python-conflict)! run `conda deactivate` in your terminal before running anything. Make sure there's no `(base)` sign in your terminal
+## Notes for Migrating from ROS1 to ROS2 and Migrating from Robosub to Roboboat
+
+- Sensors: click [here](./sensors.md) to see the sensors we need to keep and not keep
+
+- Never do `ROS2` x `conda` : `ROS2` does not work with `conda` ([source 👀](https://docs.ros.org/en/rolling/How-To-Guides/Installation-Troubleshooting.html#anaconda-python-conflict)! run `conda deactivate` in your terminal before running anything. Make sure there's no `(base)` sign in your terminal
 
 ## Set up
 
