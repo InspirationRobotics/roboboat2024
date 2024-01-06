@@ -1,5 +1,7 @@
 # roboboat2024
 
+> `ROS2` does not work with `conda` ([source 👀](https://docs.ros.org/en/rolling/How-To-Guides/Installation-Troubleshooting.html#anaconda-python-conflict)! run `conda deactivate` in your terminal before running anything. Make sure there's no `(base)` sign in your terminal
+
 ## Set up
 
 This codebase is developed and tested on `python=3.8.10`.
