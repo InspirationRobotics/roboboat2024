@@ -6,6 +6,14 @@
 
 - Never do `ROS2` x `conda` : `ROS2` does not work with `conda` ([source 👀](https://docs.ros.org/en/rolling/How-To-Guides/Installation-Troubleshooting.html#anaconda-python-conflict)! run `conda deactivate` in your terminal before running anything. Make sure there's no `(base)` sign in your terminal
 
+- Read the [Migration Guide from ROS2 Official Documentation](https://docs.ros.org/en/rolling/How-To-Guides/Migrating-from-ROS1/Migrating-Python-Packages.html)
+    - There are things that will not be covered in this guide, e.g. what exceptions to throw for service (since ROS2 doesn't have the ones ROS1 uses), in these cases, consult the following sources (in this order)
+        1. Official Documentation. e.g., see what exception type is used in its tutorial for service 
+        2. GitHub Repo Issues Page for ROS packages, such as [`rclpy`](https://github.com/ros2/rclpy/issues)
+        3. ConstuctSim (Reach out on Discord if you don't have access)
+        4. StackOverflow (with a pinch of salt)
+        5. ChatGPT (with a pinch of salt)
+
 ## Set up
 
 This codebase is developed and tested on `python=3.8.10`.
