@@ -23,3 +23,8 @@
 
 # pytest
 .pytest_cache
+
+
+/build
+/install
+/log
