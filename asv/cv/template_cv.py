@@ -30,6 +30,7 @@ class CV:
         None
         """
         self.config = config
+        # TODO: change this when barco polo's config is finished
         self.current_sub = self.config.get("sub", "onyx")
         if self.current_sub == "onyx":
             self.camera = "/auv/camera/videoOAKdRawBottom"
@@ -61,7 +62,7 @@ if __name__ == "__main__":
     ----------
     If you run this file directly, the following code will be executed
 
-    Run "python -m auv.cv.template_cv"
+    Run "python -m asv.cv.template_cv"
     """
 
     # Create a CV object with arguments
