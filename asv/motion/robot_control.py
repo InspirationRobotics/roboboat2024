@@ -8,7 +8,7 @@ from mavros_msgs.msg import OverrideRCIn
 
 from .utils import get_distance, get_heading_from_coords, heading_error, rotate_vector, inv_rotate_vector
 from ..utils import deviceHelper
-# from ..device.dvl import dvl
+# from ..device.dvl import dvl # For Roboboat, we will not be using dvl 
 import numpy as np
 
 config = deviceHelper.variables
