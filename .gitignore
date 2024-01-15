@@ -27,6 +27,7 @@
 
 /build
 /install
+<<<<<<< HEAD
 /log
 
 CMakeLists.txt.user
@@ -236,3 +237,10 @@ cython_debug/
 *.exe
 *.out
 *.app
+
+*/build
+*/install
+*/log
+
+/Livox-SDK/ws_livox/data
+*/data
