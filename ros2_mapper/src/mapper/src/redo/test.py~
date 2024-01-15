@@ -1,0 +1,6 @@
+from grid import *
+
+grid = mk_grid(4, 4)
+o = mk_obj("buoy", "nil", "nil", [0, 1], 0)
+
+add_obj(grid, o)

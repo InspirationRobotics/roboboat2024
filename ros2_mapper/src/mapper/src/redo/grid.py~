@@ -1,0 +1,40 @@
+
+def mk_grid(w, h):
+    grid = []
+
+    for i in range(0, w):
+        grid.append([])
+
+    for i in range(0, w):
+        for j in range(0, h):
+            grid[i].append([])
+        
+    return grid
+
+
+def mk_obj(type, id, mission, pose, ts):
+    o = {
+        "type": type,
+        "id": id,
+        "mission": mission,
+        "pose": pose,
+        "times_seen": ts,
+    }
+    
+    return o
+
+def add_obj(grid, obj, x, y):
+    j = 0
+
+    x += int((len(grid) - 1) / 2)
+    y += int((len(grid[0]) - 1) / 2)
+    
+    for i in grid[x][y]:
+        if i.get('type') == obj.get('type'):
+            grid[x][y][j]["times_seen"] += 1
+            j += 1
+            return
+        
+    grid[x][y].append(mk_obj(obj.get('type'), "nil", "nil", [0, 0], 1))
+
+

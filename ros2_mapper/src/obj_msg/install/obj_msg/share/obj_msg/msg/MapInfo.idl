@@ -1,0 +1,22 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from obj_msg/msg/MapInfo.msg
+// generated code does not contain a copyright notice
+
+
+module obj_msg {
+  module msg {
+    struct MapInfo {
+      double origin_lat;
+
+      double origin_lon;
+
+      double hdg;
+
+      double density;
+
+      int64 w;
+
+      int64 h;
+    };
+  };
+};

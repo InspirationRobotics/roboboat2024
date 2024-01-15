@@ -1,0 +1,17 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from obj_msg/msg/Objlst.msg
+// generated code does not contain a copyright notice
+
+#include "obj_msg/msg/Obj.idl"
+
+module obj_msg {
+  module msg {
+    struct Objlst {
+      int64 w;
+
+      int64 h;
+
+      sequence<obj_msg::msg::Obj> objects;
+    };
+  };
+};
