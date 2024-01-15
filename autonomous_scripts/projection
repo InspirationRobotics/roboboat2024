@@ -1,0 +1,6 @@
+cd ~/livox_projection
+
+source /opt/ros/galactic/setup.bash
+source ./install/setup.bash
+ros2 launch livox_pcd_projection project_launch.launch.py
+

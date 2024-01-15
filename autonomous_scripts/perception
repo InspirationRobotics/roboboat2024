@@ -1,0 +1,4 @@
+start cam
+start sub
+start lidar_driver
+start projection

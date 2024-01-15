@@ -1,0 +1,1 @@
+screen -S $1 -dm bash -c "~/autonomous_scripts/$1"

@@ -1,0 +1,5 @@
+source /opt/ros/noetic/setup.bash
+cd ~/mapper
+source devel/setup.bash
+cd src/mission_planner/src
+python3 mission_planner.py

@@ -1,0 +1,7 @@
+cd ~/multi_cam_detection
+
+source /opt/ros/galactic/setup.bash
+source install/setup.bash
+ros2 launch multi_cam_obj_detection sub.launch.py
+
+

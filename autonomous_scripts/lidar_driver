@@ -1,0 +1,7 @@
+source /opt/ros/galactic/setup.bash
+source ~/livox_ros2_driver/install/setup.bash
+
+cd ~/livox_ros2_driver/livox_ros2_driver/launch
+ros2 launch livox_lidar_msg_launch.py
+
+

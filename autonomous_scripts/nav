@@ -1,0 +1,4 @@
+source /opt/ros/galactic/setup.bash
+python3 ~/inspiration_robotx2022/nodes/navigation/nmea_reader.py 
+
+
