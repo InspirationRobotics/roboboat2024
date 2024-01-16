@@ -4,10 +4,12 @@ import platform
 from dotenv import dotenv_values
 import json
 
+
 def load_json(path):
     with open(path, "r") as f:
         data = json.load(f)
     return data
+
 
 file_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -21,6 +23,7 @@ else:
     variables = load_json(f"{file_dir}/../../config/graey.json")
 
 # --------------------------------------------------------------
+
 
 def findFromId(ids):
     bash = os.popen("bash /home/inspiration/auv/auv/utils/usbLink.sh").read()
@@ -61,6 +64,7 @@ def findCam(ids):
         if i == "":
             result.remove(i)
     return result
+
 
 # TODO: check data we can get from config (depends on the sensors and thrusters we have)
 def dataFromConfig(name):

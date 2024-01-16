@@ -16,9 +16,10 @@ import cv_bridge as CvBridge
 from sensor_msgs.msg import Image
 from std_msgs.msg import String
 
+
 class CVHandler(Node):
     def __init__(self, **config):
-        super().__init__('cv_handler_node')
+        super().__init__("cv_handler_node")
         self.config = config
         self.active_cv_scripts = {}
         self.subs = {}
@@ -37,14 +38,22 @@ class CVHandler(Node):
 
         cv_class = getattr(module, "CV", None)
         if cv_class is None:
-            self.get_logger().error("No CV class found in file, check the file name and file content")
+            self.get_logger().error(
+                "No CV class found in file, check the file name and file content"
+            )
             return
 
         if dummy_camera:
-            self.active_cv_scripts[file_name] = _DummyScriptHandler(file_name, cv_class(**self.config), dummy_camera)
+            self.active_cv_scripts[file_name] = _DummyScriptHandler(
+                file_name, cv_class(**self.config), dummy_camera
+            )
         else:
-            self.active_cv_scripts[file_name] = _ScriptHandler(self, file_name, cv_class(**self.config))
-        self.subs[file_name] = self.create_subscription(String, f"asv/cv_handler/{file_name}", callback, 10)
+            self.active_cv_scripts[file_name] = _ScriptHandler(
+                self, file_name, cv_class(**self.config)
+            )
+        self.subs[file_name] = self.create_subscription(
+            String, f"asv/cv_handler/{file_name}", callback, 10
+        )
 
     def stop_cv(self, file_name):
         if file_name not in self.active_cv_scripts:
@@ -59,11 +68,15 @@ class CVHandler(Node):
 
     def switch_oakd_model(self, file_name, model_name):
         if file_name not in self.active_cv_scripts:
-            self.get_logger().error("Cannot change model of a script that is not running")
+            self.get_logger().error(
+                "Cannot change model of a script that is not running"
+            )
             return
 
         if not self.active_cv_scripts[file_name].is_oakd:
-            self.get_logger().error("Cannot change model of a script that is not running on an OAK-D camera")
+            self.get_logger().error(
+                "Cannot change model of a script that is not running on an OAK-D camera"
+            )
             return
 
         if not isinstance(model_name, str):
@@ -75,10 +88,13 @@ class CVHandler(Node):
 
     def set_target(self, file_name, target):
         if file_name not in self.active_cv_scripts:
-            self.get_logger().error("Cannot change target of a script that is not running")
+            self.get_logger().error(
+                "Cannot change target of a script that is not running"
+            )
             return
 
         self.active_cv_scripts[file_name].target = target
+
 
 class _ScriptHandler:
     def __init__(self, cv_handler, file_name, cv_object):
@@ -88,22 +104,36 @@ class _ScriptHandler:
         self.camera_topic = getattr(self.cv_object, "camera", None)
 
         if self.camera_topic is None:
-            self.get_logger().warning("No camera topic specified, using default front camera")
+            self.get_logger().warning(
+                "No camera topic specified, using default front camera"
+            )
             self.camera_topic = "/asv/camera/videoUSBRaw0"
 
         self.br = CvBridge()
 
-        self.sub_cv = self.cv_handler.create_subscription(Image, self.camera_topic, self.callback_cam, 10)
-        self.pub_viz = self.cv_handler.create_publisher(Image, self.camera_topic.replace("Raw", "Output"), 10)
-        self.pub_out = self.cv_handler.create_publisher(String, f"asv/cv_handler/{file_name}", 10)
-        self.pub_cam_select = self.cv_handler.create_publisher(String, "/asv/camsVersatile/cameraSelect", 10)
+        self.sub_cv = self.cv_handler.create_subscription(
+            Image, self.camera_topic, self.callback_cam, 10
+        )
+        self.pub_viz = self.cv_handler.create_publisher(
+            Image, self.camera_topic.replace("Raw", "Output"), 10
+        )
+        self.pub_out = self.cv_handler.create_publisher(
+            String, f"asv/cv_handler/{file_name}", 10
+        )
+        self.pub_cam_select = self.cv_handler.create_publisher(
+            String, "/asv/camsVersatile/cameraSelect", 10
+        )
 
         if "OAKd" in self.camera_topic:
             self.is_oakd = True
             pub_oakd_model_topic = self.camera_topic.replace("Raw", "Model")
             pub_oakd_data_topic = self.camera_topic.replace("Raw", "Data")
-            self.pub_oakd_model = self.cv_handler.create_publisher(String, pub_oakd_model_topic, 10)
-            self.sub_oakd_data = self.cv_handler.create_subscription(String, pub_oakd_data_topic, self.callback_oakd_data, 10)
+            self.pub_oakd_model = self.cv_handler.create_publisher(
+                String, pub_oakd_model_topic, 10
+            )
+            self.sub_oakd_data = self.cv_handler.create_subscription(
+                String, pub_oakd_data_topic, self.callback_oakd_data, 10
+            )
         else:
             self.is_oakd = False
             self.pub_oakd_model = None
@@ -182,13 +212,15 @@ class _ScriptHandler:
             if self.last_received == self.last:
                 continue
             self.last_processed = self.last_received
-            
+
             # Run the CV
             frame = self.next_frame
             try:
                 ret = self.cv_object.run(frame, self.target, self.oakd_data)
             except Exception as e:
-                self.cv_handler.get_logger().error(f"Error while running CV {self.file_name}: {e}")
+                self.cv_handler.get_logger().error(
+                    f"Error while running CV {self.file_name}: {e}"
+                )
                 continue
 
             if isinstance(ret, tuple) and len(ret) == 2:
@@ -216,6 +248,7 @@ class _ScriptHandler:
         self.pub_cam_select.destroy_publisher()
         self.closed = True
 
+
 class _DummyScriptHandler:
     def __init__(self, file_name, cv, dummy):
         self.file_name = file_name
@@ -240,8 +273,12 @@ class _DummyScriptHandler:
 
         self.thread = threading.Thread(target=self.run)
 
-        self.pub_viz = self.cv.create_publisher(Image, self.camera_topic.replace("Raw", "Output"), 10)
-        self.pub_out = self.cv.create_publisher(String, f"asv/cv_handler/{file_name}", 10)
+        self.pub_viz = self.cv.create_publisher(
+            Image, self.camera_topic.replace("Raw", "Output"), 10
+        )
+        self.pub_out = self.cv.create_publisher(
+            String, f"asv/cv_handler/{file_name}", 10
+        )
 
     def run(self):
         self.running = True
@@ -282,6 +319,7 @@ class _DummyScriptHandler:
         self.pub_out.destroy_publisher()
         self.closed = True
 
+
 class Detection:
     def __init__(self, data):
         self.label = data[0]
@@ -291,7 +329,9 @@ class Detection:
         self.ymin = data[4]
         self.ymax = data[5]
 
+
 if __name__ == "__main__":
+
     def dummy_callback(msg):
         print(f"[INFO] received: {msg.data}")
 

@@ -38,7 +38,7 @@ config = deviceHelper.variables
 
 class ASV(RosHandler):
     def __init__(self):
-        super().__init__('asv')
+        super().__init__("asv")
 
         self.config = config
 
@@ -59,35 +59,58 @@ class ASV(RosHandler):
         self.depth_pid_params = config.get("depth_pid_params", [0.5, 0.1, 0.1])
         self.depth_pid_offset = config.get("depth_pid_offset", 1500)
         self.depth_pid = PID(*self.depth_pid_params, setpoint=0.5)
-        self.depth_pid.output_limits = (-self.depth_pid_params[0], self.depth_pid_params[0])
+        self.depth_pid.output_limits = (
+            -self.depth_pid_params[0],
+            self.depth_pid_params[0],
+        )
 
         # init topics
         self.TOPIC_STATE = TopicService("/mavros/state", mavros_msgs.msg.State)
-        self.SERVICE_ARM = TopicService("/mavros/cmd/arming", mavros_msgs.srv.CommandBool)
-        self.SERVICE_SET_MODE = TopicService("/mavros/set_mode", mavros_msgs.srv.SetMode)
-        self.SERVICE_SET_PARAM = TopicService("/mavros/param/set", mavros_msgs.srv.ParamSet)
-        self.SERVICE_GET_PARAM = TopicService("/mavros/param/get", mavros_msgs.srv.ParamGet)
+        self.SERVICE_ARM = TopicService(
+            "/mavros/cmd/arming", mavros_msgs.srv.CommandBool
+        )
+        self.SERVICE_SET_MODE = TopicService(
+            "/mavros/set_mode", mavros_msgs.srv.SetMode
+        )
+        self.SERVICE_SET_PARAM = TopicService(
+            "/mavros/param/set", mavros_msgs.srv.ParamSet
+        )
+        self.SERVICE_GET_PARAM = TopicService(
+            "/mavros/param/get", mavros_msgs.srv.ParamGet
+        )
 
         # movement
         # only works in auto/guided mode
-        self.TOPIC_SET_VELOCITY = TopicService("/mavros/setpoint_velocity/cmd_vel_unstamped", geometry_msgs.msg.Twist)
-        self.TOPIC_SET_RC_OVR = TopicService("/mavros/rc/override", mavros_msgs.msg.OverrideRCIn)
+        self.TOPIC_SET_VELOCITY = TopicService(
+            "/mavros/setpoint_velocity/cmd_vel_unstamped", geometry_msgs.msg.Twist
+        )
+        self.TOPIC_SET_RC_OVR = TopicService(
+            "/mavros/rc/override", mavros_msgs.msg.OverrideRCIn
+        )
 
         # sensory
         self.TOPIC_GET_IMU_DATA = TopicService("/mavros/imu/data", sensor_msgs.msg.Imu)
-        self.TOPIC_GET_CMP_HDG = TopicService("/mavros/global_position/compass_hdg", std_msgs.msg.Float64)
+        self.TOPIC_GET_CMP_HDG = TopicService(
+            "/mavros/global_position/compass_hdg", std_msgs.msg.Float64
+        )
         self.TOPIC_GET_RC = TopicService("/mavros/rc/in", mavros_msgs.msg.RCIn)
         self.TOPIC_GET_MAVBARO = TopicService("/mavlink/from", mavros_msgs.msg.Mavlink)
         # https://discuss.bluerobotics.com/t/ros-support-for-bluerov2/1550/24
-        self.TOPIC_GET_BATTERY = TopicService("/mavros/battery", sensor_msgs.msg.BatteryState)
+        self.TOPIC_GET_BATTERY = TopicService(
+            "/mavros/battery", sensor_msgs.msg.BatteryState
+        )
 
         # custom topics
         self.asv_COMPASS = TopicService("/asv/devices/compass", std_msgs.msg.Float64)
         self.asv_IMU = TopicService("/asv/devices/imu", sensor_msgs.msg.Imu)
         # self.asv_BARO = TopicService("/asv/devices/baro", std_msgs.msg.Float32MultiArray)
-        self.asv_GET_THRUSTERS = TopicService("/asv/devices/thrusters", mavros_msgs.msg.OverrideRCIn)
+        self.asv_GET_THRUSTERS = TopicService(
+            "/asv/devices/thrusters", mavros_msgs.msg.OverrideRCIn
+        )
         self.asv_GET_DEPTH = TopicService("/asv/devices/setDepth", std_msgs.msg.Float64)
-        self.asv_GET_REL_DEPTH = TopicService("/asv/devices/setRelativeDepth", std_msgs.msg.Float64)
+        self.asv_GET_REL_DEPTH = TopicService(
+            "/asv/devices/setRelativeDepth", std_msgs.msg.Float64
+        )
         self.asv_GET_ARM = TopicService("/asv/status/arm", std_msgs.msg.Bool)
         self.asv_GET_MODE = TopicService("/asv/status/mode", std_msgs.msg.String)
 
@@ -157,7 +180,9 @@ class ASV(RosHandler):
             if depth < -9 or depth > 100:
                 return
             self.depth_pwm = int(self.depth_pid(depth) * -1 + self.depth_pid_offset)
-            print(f"[depth_hold] depth: {depth:.4f} depthMotorPower: {self.depth_pwm} Target: {self.depth_pid.setpoint}")
+            print(
+                f"[depth_hold] depth: {depth:.4f} depthMotorPower: {self.depth_pwm} Target: {self.depth_pid.setpoint}"
+            )
             # assume motor range is 1200-1800 so +-300
         except Exception as e:
             print("DepthHold error")
@@ -208,7 +233,7 @@ class ASV(RosHandler):
     def thrusterCallback(self, msg):
         self.thrustTime = time.time()
         self.channels = list(msg.channels)
-        #print(self.channels)
+        # print(self.channels)
 
     def enable_topics_for_read(self):
         self.topic_subscriber(self.TOPIC_STATE, self.update_parameters_from_topic)

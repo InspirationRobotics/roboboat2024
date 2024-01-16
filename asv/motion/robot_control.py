@@ -3,21 +3,30 @@ import time
 import rclpy
 from std_msgs.msg import Float64, Float32MultiArray
 from simple_pid import PID
+
 z
 from mavros_msgs.msg import OverrideRCIn
 
-from .utils import get_distance, get_heading_from_coords, heading_error, rotate_vector, inv_rotate_vector
+from .utils import (
+    get_distance,
+    get_heading_from_coords,
+    heading_error,
+    rotate_vector,
+    inv_rotate_vector,
+)
 from ..utils import deviceHelper
-# from ..device.dvl import dvl # For Roboboat, we will not be using dvl 
+
+# from ..device.dvl import dvl # For Roboboat, we will not be using dvl
 import numpy as np
 
 config = deviceHelper.variables
+
 
 class RobotControl:
     """Class to control the robot"""
 
     def __init__(self, enable_dvl=True):
-        super().__init__('robot_control')
+        super().__init__("robot_control")
         # variables for robots
         self.config = config
         self.depth = self.config.get("INIT_DEPTH", 0.0)
@@ -31,13 +40,21 @@ class RobotControl:
         self.dvl = None
 
         # establishing thrusters and depth publishers
-        self.sub_compass = self.create_subscription(Float64, 'auv/devices/compass', self.get_callback_compass, 10)
-        self.sub_depth = self.create_subscription(Float32MultiArray, '/auv/devices/baro', self.callback_depth, 10)
-        self.pub_thrusters = self.create_publisher(OverrideRCIn, 'auv/devices/thrusters')
-        self.pub_depth = self.create_publisher(Float64, 'auv/devices/setDepth', 10)
-        self.pub_rel_depth = self.create_publisher(Float64, 'auv/devices/setRelativeDepth', 10)
+        self.sub_compass = self.create_subscription(
+            Float64, "auv/devices/compass", self.get_callback_compass, 10
+        )
+        self.sub_depth = self.create_subscription(
+            Float32MultiArray, "/auv/devices/baro", self.callback_depth, 10
+        )
+        self.pub_thrusters = self.create_publisher(
+            OverrideRCIn, "auv/devices/thrusters"
+        )
+        self.pub_depth = self.create_publisher(Float64, "auv/devices/setDepth", 10)
+        self.pub_rel_depth = self.create_publisher(
+            Float64, "auv/devices/setRelativeDepth", 10
+        )
 
-        # TODO: reset pix standalone depth Integration param 
+        # TODO: reset pix standalone depth Integration param
 
         # set of PIDs to handle movement of the robot
         self.PIDs = {
@@ -64,8 +81,6 @@ class RobotControl:
             ),
         }
 
-
-
     def callback_compass(self, msg):
         """Get compass heading from `/auv/devices/compass` topic"""
         self.compass = msg.data
@@ -86,7 +101,9 @@ class RobotControl:
         rel_depth = Float64()
         rel_depth.data = delta_depth
         self.pub_rel_depth.publish(rel_depth)
-        self.get_logger().info(f"[INFO] Changing Depth relatively by {delta_depth}, current {self.depth}")
+        self.get_logger().info(
+            f"[INFO] Changing Depth relatively by {delta_depth}, current {self.depth}"
+        )
 
     def movement(
         self,
@@ -118,7 +135,7 @@ class RobotControl:
         pwm.channels = channels
 
         # publishing pwms to /auv/devices/thrusters
-        if vertical!=0: 
+        if vertical != 0:
             self.set_relative_depth(vertical)
         self.pub_thrusters.publish(pwm)
 
@@ -138,7 +155,9 @@ class RobotControl:
             # normalize error to -1, 1 for the PID controller
             output = self.PIDs["yaw"](-error / 180)
 
-            self.get_logger().info(f"[DEBUG] Heading error: {error}, output: {output} {self.compass} {target}")
+            self.get_logger().info(
+                f"[DEBUG] Heading error: {error}, output: {output} {self.compass} {target}"
+            )
 
             if abs(error) <= 1:
                 self.get_logger().info("[INFO] Heading reached")
@@ -180,12 +199,21 @@ class RobotControl:
                 pwm.channels[3] = 1500 + (dir * speed)
                 self.pub_thrusters.publish(pwm)  # publishing pwms to continue yawing
 
-    def navigate_dvl(self, x, y, z, end_heading=None, relative_coord=True, relative_heading=True, update_freq=10):
+    def navigate_dvl(
+        self,
+        x,
+        y,
+        z,
+        end_heading=None,
+        relative_coord=True,
+        relative_heading=True,
+        update_freq=10,
+    ):
         """
         # NOTE: this function is complex and requires compass to work PERFECTLY
         if you want to simply move forward, use forward_dvl instead
 
-        Navigate to a given point, blocking function, compass should be calibrated 
+        Navigate to a given point, blocking function, compass should be calibrated
         x, y are in meters, by default relative to the current position and heading ; z is absolute
         x = lateral, y = forward, z = depth
 
@@ -214,7 +242,9 @@ class RobotControl:
             x, y = rotate_vector(x, y, self.compass)
 
         target_heading = get_heading_from_coords(x, y)
-        self.get_logger().info(f"[INFO] Navigating to {x}, {y}, {z}, {target_heading}deg current {self.compass}")
+        self.get_logger().info(
+            f"[INFO] Navigating to {x}, {y}, {z}, {target_heading}deg current {self.compass}"
+        )
 
         # rotate and set depth
         self.set_heading(target_heading)
@@ -253,7 +283,9 @@ class RobotControl:
                 # calculate PID outputs
                 output_x = self.PIDs["lateral"](-err_x)
                 output_y = self.PIDs["forward"](-err_y)
-                self.get_logger().info(f"[DEBUG] err_x={err_x}, err_y={err_y}, output_x={output_x}, output_y={output_y}")
+                self.get_logger().info(
+                    f"[DEBUG] err_x={err_x}, err_y={err_y}, output_x={output_x}, output_y={output_y}"
+                )
                 self.movement(lateral=output_x, forward=output_y)
 
     def forward_dvl(self, throttle, distance):
@@ -262,7 +294,9 @@ class RobotControl:
             self.get_logger().error("[ERROR] DVL not available, cannot navigate")
             return
 
-        self.get_logger().info(f"[INFO] Moving forward {distance}m at throttle {throttle}")
+        self.get_logger().info(
+            f"[INFO] Moving forward {distance}m at throttle {throttle}"
+        )
 
         # enter a local scope to handle coordinates nicely
         with self.dvl:
@@ -285,9 +319,11 @@ class RobotControl:
                 if abs(error) <= 0.1:
                     self.get_logger().info("[INFO] Target reached")
                     break
-                
+
                 forward_output = np.clip(error * 4, -throttle, throttle)
-                self.get_logger().info(f"[DEBUG] error={error}, forward_output={forward_output}")
+                self.get_logger().info(
+                    f"[DEBUG] error={error}, forward_output={forward_output}"
+                )
 
                 self.movement(forward=forward_output)
 
@@ -297,7 +333,9 @@ class RobotControl:
             self.get_logger().error("[ERROR] DVL not available, cannot navigate")
             return
 
-        self.get_logger().info(f"[INFO] Moving laterally {distance}m at throttle {throttle}")
+        self.get_logger().info(
+            f"[INFO] Moving laterally {distance}m at throttle {throttle}"
+        )
 
         # enter a local scope to handle coordinates nicely
         with self.dvl:
@@ -320,9 +358,11 @@ class RobotControl:
                 if abs(error) <= 0.1:
                     self.get_logger().info("[INFO] Target reached")
                     break
-                
+
                 lateral_output = np.clip(error * 4, -throttle, throttle)
-                self.get_logger().info(f"[DEBUG] error={error}, lateral_output={lateral_output}")
+                self.get_logger().info(
+                    f"[DEBUG] error={error}, lateral_output={lateral_output}"
+                )
 
                 self.movement(lateral=lateral_output)
 
@@ -331,7 +371,9 @@ class RobotControl:
         # Power 2: 21t+0.00952
         # Power 3: 32.1t-18.7
         forwardPower = (power * 80) + 1500  # calculating power for forward thrusters
-        if t > 3:  # designating time for backstopping function to prevent inertia from increasing distance travelled
+        if (
+            t > 3
+        ):  # designating time for backstopping function to prevent inertia from increasing distance travelled
             timeStop = t / 6
         else:
             timeStop = 0.5
@@ -343,7 +385,9 @@ class RobotControl:
         pwm.channels[4] = forwardPower
         startTime = time.time()
         while time.time() - startTime < t:
-            self.pub_thrusters.publish(pwm)  # publishing pwms for forward commands to thrusters
+            self.pub_thrusters.publish(
+                pwm
+            )  # publishing pwms for forward commands to thrusters
             time.sleep(0.1)
 
         self.get_logger().info("[INFO] finished forward")
@@ -354,7 +398,9 @@ class RobotControl:
         while time.time() - startTime < timeStop:
             current_p = pwm.channels[4]
             pwm.channels[4] = current_p - gradDec
-            self.pub_thrusters.publish(pwm)  # publishing reduced pwms for forward thrust
+            self.pub_thrusters.publish(
+                pwm
+            )  # publishing reduced pwms for forward thrust
             time.sleep(0.1)
 
         t2 = 0
@@ -386,7 +432,7 @@ class RobotControl:
         pwm.channels = [1500] * 18
         pwm.channels[4] = int(forwardPower)
         if config.get("sub", "onyx") == "graey":
-            pwm.channels[5] = 1500-int(power*7)
+            pwm.channels[5] = 1500 - int(power * 7)
         startTime = time.time()
         while time.time() - startTime < t:
             self.pub_thrusters.publish(pwm)
@@ -395,7 +441,7 @@ class RobotControl:
 
     def mapping(self, x, in_min, in_max, out_min, out_max):
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
-    
+
     # universal backstop that is given pwm to reduce and overall time of movement which calculates inertia and sends commands/pwms for thrust in the negative direction for backstopping
     def backStop(self, pwm, t):
         if t > 3:

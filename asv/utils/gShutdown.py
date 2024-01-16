@@ -7,10 +7,10 @@ from asv.utils.deviceHelper import variables
 import signal
 
 # TODO: change this to the name for Barco Polo in the future
-if (variables.get("sub", "onyx") == "onyx"):
+if variables.get("sub", "onyx") == "onyx":
     killPin = 19
 else:
-    killPin=35
+    killPin = 35
 global state
 global loop
 startTime = 0
@@ -31,6 +31,7 @@ def onExit(signum, frame):
     except:
         pass
 
+
 signal.signal(signal.SIGINT, onExit)
 
 while loop:
@@ -39,7 +40,7 @@ while loop:
         state = True
         startTime = time.time()
 
-    if current == 0 and state == True and startTime!=0:
+    if current == 0 and state == True and startTime != 0:
         if time.time() - startTime > 1:
             print("Disarming")
             try:

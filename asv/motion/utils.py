@@ -9,12 +9,12 @@ def heading_error(heading, target):
     """
     # Calculate the initial error
     error = target - heading
-    
+
     # Check if the absolute value of the error is greater than 180 degrees
     if abs(error) > 180:
         # Adjust the error to be within the range of -180 to 180 degrees
         error = (error + 360) % 360
-    
+
     # Return the adjusted error
     return error
 
@@ -35,6 +35,7 @@ def get_norm(x, y) -> float:
     norm: float = math.sqrt(x**2 + y**2)
     return norm
 
+
 def get_distance(v1, v2) -> float:
     """
     Calculate distance between two points
@@ -48,11 +49,11 @@ def get_distance(v1, v2) -> float:
     -------
     Distance between v1 and v2
     """
-    dist = math.sqrt((v1[0] - v2[0])**2 + (v1[1] - v2[1])**2)
+    dist = math.sqrt((v1[0] - v2[0]) ** 2 + (v1[1] - v2[1]) ** 2)
     return dist
 
 
-def rotate_vector(x, y, heading) -> Tuple[float,float]:
+def rotate_vector(x, y, heading) -> Tuple[float, float]:
     """
     Rotate a vector by heading
     Clockwise rotation
@@ -73,7 +74,7 @@ def rotate_vector(x, y, heading) -> Tuple[float,float]:
     return x_rot, y_rot
 
 
-def inv_rotate_vector(x, y, heading) -> Tuple[float,float]:
+def inv_rotate_vector(x, y, heading) -> Tuple[float, float]:
     """
     Rotate a vector by heading
     Counterclockwise rotation

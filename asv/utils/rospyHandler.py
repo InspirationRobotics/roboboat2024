@@ -16,7 +16,7 @@ class RosHandler:
         node: str
             The name of the ROS2 Node to be created, run, and shut down (after running)
         rate: int
-            The name 
+            The name
         """
         rclpy.init()
         self.node = rclpy.create_node(node)
@@ -27,7 +27,6 @@ class RosHandler:
             rclpy.spin(self.node)
         finally:
             self.node.destroy_node()
-
 
     def disconnect(self):
         if self.connected:
@@ -62,18 +61,19 @@ class RosHandler:
             srv_client = node.create_client(typ, srv)
 
             while not srv_client.wait_for_service(timeout_sec=1.0):
-                node.get_logger().info('service not available, waiting again...')
+                node.get_logger().info("service not available, waiting again...")
 
             node.get_logger.info(f"ROS service is up:{srv}")
-            
+
             resp = srv_client.call_async(data)
             return resp
-        
+
         except rclpy.KeyError as e:
             node.get_logger.info(f"error: {e}")
         except Exception as e:
-            node.get_logger().info("Service call failed %r" % (e, ))
+            node.get_logger().info("Service call failed %r" % (e,))
         except KeyError as e:
             node.get_logger().info("ERROR:", e)
         return None
+
     # do we need something like spin_until_future_complete()

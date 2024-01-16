@@ -42,8 +42,8 @@ class CV:
         elif midpoint > self.CENTER_FRAME_X + tolerance:
             lateral = 1
         else:
-            lateral=0
-        
+            lateral = 0
+
         return lateral
 
     def alignTarget(self, target_x, tolerance):
@@ -53,17 +53,18 @@ class CV:
             lateral = 1
         else:
             lateral = 0
-        
+
         return lateral
 
     def run(self, frame, target, detections):
         """
         Here should be all the code required to run the CV.
-        This could be a loop, grabing frames using ROS, etc.
+        This could be a loop, grabbing frames using ROS, etc.
+
         if target == 0, abydos
         if target == 1, earth
         """
-        #print("[INFO] Gate CV run")
+        # print("[INFO] Gate CV run")
         # if detections is None or len(detections) == 0:
         # return {"lateral": 0, "forward": 1,"yaw":0, "end": False}, frame
 
@@ -79,12 +80,32 @@ class CV:
         targetConfidences = []
         end = False
         for detection in detections:
-            area = abs(detection.xmin - detection.xmax)*abs(detection.ymin-detection.ymax)
-            x = (detection.xmin + detection.xmax)/2
-            ratio = abs(detection.xmin - detection.xmax)/abs(detection.ymin-detection.ymax)
-            targetConfidences.append((detection.confidence, x, detection.label, abs(detection.xmin - detection.xmax), area, ratio))
+            area = abs(detection.xmin - detection.xmax) * abs(
+                detection.ymin - detection.ymax
+            )
+            x = (detection.xmin + detection.xmax) / 2
+            ratio = abs(detection.xmin - detection.xmax) / abs(
+                detection.ymin - detection.ymax
+            )
+            targetConfidences.append(
+                (
+                    detection.confidence,
+                    x,
+                    detection.label,
+                    abs(detection.xmin - detection.xmax),
+                    area,
+                    ratio,
+                )
+            )
 
-        for det_confidence, det_x, det_label, det_length, det_area, det_ratio in targetConfidences:
+        for (
+            det_confidence,
+            det_x,
+            det_label,
+            det_length,
+            det_area,
+            det_ratio,
+        ) in targetConfidences:
             if target in det_label:
                 target_x = det_x
                 target_length = det_length
@@ -100,46 +121,86 @@ class CV:
         forward = 0
         lateral = 0
         yaw = 0
-        tolerance =20
+        tolerance = 20
         message = ""
+
         # step 0: strafe until we hit the center of the highest confidence glyph
         # if target is detected
-        if(self.state == "frame"):
+        if self.state == "frame":
             print("AREA:", target_area)
-            if(target_area > 650):
+            if target_area > 650:
                 message = "TOO CLOSE! GOING BACKWARD"
                 forward = -1
-            elif(target_area<310):
+            elif target_area < 310:
                 message = "TOO FAR! GOING FORWARD"
                 forward = 1
             else:
                 self.state = "strafe"
                 message = "JUST RIGHT! BEGINNING STRAFE/YAW"
 
-            cv2.putText(frame, message, (120, 300), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 2)
-  
-        if(self.state == "strafe" and len(detections) == 2):
-            midpoint = (target_x + other_x)/2
+            cv2.putText(
+                frame,
+                message,
+                (120, 300),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                (255, 255, 0),
+                2,
+            )
+
+        if self.state == "strafe" and len(detections) == 2:
+            midpoint = (target_x + other_x) / 2
 
             dist = abs(midpoint - 320) / 320
 
-            cv2.putText(frame, "ALIGNING STRAFE", (220, 250), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 2)
+            cv2.putText(
+                frame,
+                "ALIGNING STRAFE",
+                (220, 250),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                (255, 255, 0),
+                2,
+            )
             lateral = self.alignMidpoint(midpoint, 20)
-            if(lateral == 0):
+            if lateral == 0:
                 message = "FINISHED STRAFE"
                 self.state = "end"
-            
+
             lateral = np.clip(lateral * dist * 5.5, -1, 1)
-            cv2.putText(frame, message, (220, 300), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 2)
-            
-        if(self.state == "end"):
+            cv2.putText(
+                frame,
+                message,
+                (220, 300),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                (255, 255, 0),
+                2,
+            )
+
+        if self.state == "end":
             end = True
             print("ENDING MISSION")
 
         if yaw == 0:
             yaw = 0.1
 
-        cv2.putText(frame, "LATERAL:   "+str(lateral)+"\n" +"FORWARD:   "+str(forward) +"\n" + "YAW:   "+str(yaw) , (0, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 2)
+        cv2.putText(
+            frame,
+            "LATERAL:   "
+            + str(lateral)
+            + "\n"
+            + "FORWARD:   "
+            + str(forward)
+            + "\n"
+            + "YAW:   "
+            + str(yaw),
+            (0, 150),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (255, 255, 0),
+            2,
+        )
         return {"lateral": lateral, "forward": forward, "yaw": yaw, "end": end}, frame
 
-        # TODO://detection of going through the gate + yaw 2 rotations entirely 
+        # TODO://detection of going through the gate + yaw 2 rotations entirely

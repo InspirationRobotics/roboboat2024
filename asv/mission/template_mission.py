@@ -118,7 +118,7 @@ if __name__ == "__main__":
     from asv.utils import deviceHelper
 
     rclpy.init()
-    node = rclpy.create_node('template_mission')
+    node = rclpy.create_node("template_mission")
 
     config = deviceHelper.variables
     config.update(

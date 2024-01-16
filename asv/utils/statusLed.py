@@ -53,6 +53,7 @@ def blue(state):
         print("Blue Light is Off!")
     GPIO.cleanup()
 
+
 # check if command-line arguments are provided
 if len(sys.argv) > 1:
     # Iterate through the command-line arguments
