@@ -38,7 +38,7 @@ On the second terminal
 ```bash
 docker container ls # to see the running cros2 run ros2_serial_interface serial_serverontainers.
 # find the ID of container you just ran
-docker exec -it CONTAINERID
+docker exec -it CONTAINERID /bin/bash
 cd /
 bash ros_entrypoint.sh
 cd ~/ros2_serial_interface
