@@ -16,31 +16,43 @@ class client(Node):
         self.i = 0
         self.subscription = self.create_subscription(
             String,
-            "/wamv/t500/motor_cmd",
+            "/wamv/t200/motor_cmd",
             self.mc_callback,
             10)
         self.subscription  # prevent unused variable warning
 
-    def setpwm_port(self, pwm):
+# setup PWM channels for each of the motors
+
+    def setpwm_port_fore(self, pwm):
         os.system("cd /home/inspirationagx01/maestro-linux && ./UscCmd --servo " + str(0) + "," + str(pwm*4))
 
-    def setpwm_starboard(self, pwm):
+    def setpwm_port_aft(self, pwm):
         os.system("cd /home/inspirationagx01/maestro-linux && ./UscCmd --servo " + str(1) + "," + str(pwm*4))
+
+    def setpwm_starboard_fore(self, pwm):
+        os.system("cd /home/inspirationagx01/maestro-linux && ./UscCmd --servo " + str(2) + "," + str(pwm*4))
+
+    def setpwm_starboard_aft(self, pwm):
+        os.system("cd /home/inspirationagx01/maestro-linux && ./UscCmd --servo " + str(3) + "," + str(pwm*4))        
 
     def mc_callback(self, data):
         send_data = data.data
     #send_data = "11"
         print(data.data)
-
+# need to revise the stuff inside the brackets
         command_json = json.loads(data.data, parse_int=int)
-        left = command_json['lp']
-        right = command_json['rp']
+        left_front = command_json['lp']
+        left_back = command_json['lp']        
+        right_front = command_json['rp']
+        right_back = command_json['rp']
     
         print(command_json['lp'])
         print(command_json['rp'])
 
-        self.setpwm_port(left)
-        self.setpwm_starboard(right)
+        self.setpwm_port_fore(left_front)
+        self.setpwm_port_aft(left_back)        
+        self.setpwm_starboard_fore(right_front)
+        self.setpwm_starboard_aft(right_back)
 def main(args=None):
     rclpy.init(args=args)
 

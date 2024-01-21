@@ -23,6 +23,7 @@ class avoid_wall(mission_template):
 
     def ready_for_mission(self, floating_objects = None, envmap = None):
         if floating_objects is not None:
+            #check for walls
             self.floating_objects = self.retrieve_color(floating_objects,Object_Colors.PURPLE)
         if envmap is not None:
             self.envmap = envmap
@@ -32,6 +33,7 @@ class avoid_wall(mission_template):
         return False
     
     def estimate_path(self, start_point):
+        #line drawing algorithm
         x = bresenham2D(self.floating_objects[0].location[0], self.floating_objects[0].location[1], \
         self.floating_objects[1].location[0], self.floating_objects[1].location[1])
 
