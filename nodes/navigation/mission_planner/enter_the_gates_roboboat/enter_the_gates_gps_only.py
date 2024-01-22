@@ -80,8 +80,11 @@ class enter_the_gates_blind(mission_template):
         if current_heading-desired_heading>5 & current_heading-desired_heading<180: #degrees
             self.turn_left
         elif current_heading-desired_heading<355 & current_heading-desired_heading>180:
+            self.turn_right
+        else:
+            self.move_forward_cmd
             
 
-        desired_long=; #need to write code to get this from the gps
-        if current_long-desired_long>
+        #desired_long=; #need to write code to get this from the gps
+       # if current_long-desired_long>
 
