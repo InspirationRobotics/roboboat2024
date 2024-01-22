@@ -85,7 +85,7 @@ def main():
     rclpy.init()
 
     node = rclpy.create_node('keyboard_publisher')
-    pub = node.create_publisher(String, 'servo_keyboard_input', 10)
+    pub = node.create_publisher(String, 'navigation_input', 10)
 
     x = 0.0
     y = 0.0
