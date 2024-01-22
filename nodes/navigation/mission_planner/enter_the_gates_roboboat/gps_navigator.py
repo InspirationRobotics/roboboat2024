@@ -4,7 +4,7 @@ from rclpy.node import Node
 import math
 import time
 import numpy as np
-from std_msgs.msg import Float64
+from std_msgs.msg import Float64, String
 from sensor_msgs.msg import NavSatFix
 from sensor_msgs.msg import Imu
 from sensor_msgs.msg import LaserScan
@@ -62,10 +62,11 @@ class GPS_Nav(Node):
         print("i:" ,self.i)
         self.current_lat = data.latitude
         self.current_lon = data.longitude
-        left_front = self.create_publisher(Float64, '/wamv/thrusters/left/thrust', 10)
-        left_back = self.create_publisher(Float64, '/wamv/thrusters/left/thrust', 10)
-        right_front = self.create_publisher(Float64, '/wamv/thrusters/right/thrust', 10)
-        right_back = self.create_publisher(Float64, '/wamv/thrusters/right/thrust', 10)
+        """left_front = self.create_publisher(Float64, '/wamv/thrusters/left_front/thrust', 10)
+        left_back = self.create_publisher(Float64, '/wamv/thrusters/left_back/thrust', 10)
+        right_front = self.create_publisher(Float64, '/wamv/thrusters/right_front/thrust', 10)
+        right_back = self.create_publisher(Float64, '/wamv/thrusters/right_back/thrust', 10)"""
+        boat_cmd= self.create_publisher(String, 'navigation_input', 10)
         self.target_angle = self.get_bearing(self.current_lat, self.current_lon, self.target_lat, self.target_lon)
         #print("Current Lat: {0}, Current Lon: {1}".format(self.current_lat, self.current_lon))
         self.target_distance = ((self.target_lat - self.current_lat)**2 + (self.target_lon - self.current_lon)**2) ** (1/2)
@@ -78,11 +79,12 @@ class GPS_Nav(Node):
             speed2=0;
             print("Arrived")
             if(self.station_started):
-            	print("holding place")
-            	right_front.publish(-0.1)
+                boat_cmd.publish('s') #stop
+            	"""print("holding place")
+                right_front.publish(-0.1)
             	right_back.publish(0.1)
             	left_front.publish(-0.1)
-            	left_back.publish(0.1)
+            	left_back.publish(0.1)"""
             if(not self.station_keep):
             	return
         orientation = data.orientation
