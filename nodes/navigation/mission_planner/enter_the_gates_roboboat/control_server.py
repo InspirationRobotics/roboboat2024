@@ -15,12 +15,12 @@ class NavigationServer(Node):
 		namespace='',
 		parameters=[
 			('device', '/dev/ttyACM0'), #device we are transmitting to & receiving messages from
-		    ('navigation_input', 'navigation_input'),
-		    ('move_forward_cmd', 'w'),
-		    ('move_backward_cmd', 'x'),
-            ('turn_left_cmd', 'a'),
-            ('turn_right_cmd', 'd'),
-		    ('stop_cmd', 's')		
+		    	('navigation_input', 'navigation_input'),
+		    	('move_forward_cmd', 'w'),
+		    	('move_backward_cmd', 'x'),
+			('turn_left_cmd', 'a'),
+            		('turn_right_cmd', 'd'),
+		    	('stop_cmd', 's')		
 			]
 		)
 		self.servo_topic_name = self.get_param_str('navigation_input')
@@ -28,8 +28,8 @@ class NavigationServer(Node):
 		self.move_forward_cmd = self.get_param_str('move_forward_cmd')
 		self.move_backward_cmd = self.get_param_str('move_backward_cmd')
 		self.stop_cmd = self.get_param_str('stop_cmd')
-        self.turn_left_cmd = self.get_param_str('turn_left_cmd')
-        self.turn_right_cmd = self.get_param_str('turn_right_cmd')
+        	self.turn_left_cmd = self.get_param_str('turn_left_cmd')
+        	self.turn_right_cmd = self.get_param_str('turn_right_cmd')
 		self.ser = serial.Serial(self.device_name,
                            9600, #Note: Baud Rate must be the same in the arduino program, otherwise signal is not received!
                            timeout=.1)
