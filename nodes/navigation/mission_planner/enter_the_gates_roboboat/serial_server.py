@@ -62,7 +62,7 @@ class NavigationServer(Node):
 			print(f"Error receiving command: {e}")
 			return None
 
-    	def serial_listener_callback(self, msg):
+    def serial_listener_callback(self, msg):
 		#
 		# For some reason, arduino sends back null byte (0b'' or Oxff) back after the first call to ser.write
 		# If the statement in "try" executes when this happens, it causes this error which crashes the program:
@@ -86,9 +86,9 @@ class NavigationServer(Node):
 			self.send_cmd(self.turn_left_cmd)
 			self.receive_cmd()
 		"""Turn Right"""
-		if msg.data == self.turn_right_cmd:
+		if msg.data == self.stop_cmd:
 			self.send_cmd(self.turn_right_cmd)
-			self.receive_cmd()
+			self.receive_cmd
 
 
 
