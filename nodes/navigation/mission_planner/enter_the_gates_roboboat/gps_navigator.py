@@ -38,14 +38,14 @@ class GPS_Nav(Node):
         self.station_started = False
         self.all_done = False
         self.target_distance = 0
-        self.MIN_DIST = 0.00002 
+"""        self.MIN_DIST = 0.00002 
         self.SLO_DIST = 0.0001 
         self.MED_DIST = 0.005 
         #9000,900000, and 900 seem to move at basically the same speed, maybe it's capped at 1000
         #However, 90 is significantly different from 900
         self.MAX_SPEED = 9000.0 
         self.MED_SPEED = 7000.0 
-        self.SLO_SPEED = 3500.0 
+        self.SLO_SPEED = 3500.0 """
         self.ANGLE_THR = 0.8 
         self.ANGLE_THR_P = 0.5 
         self.initial_alignment = True
@@ -85,8 +85,117 @@ class GPS_Nav(Node):
             	left_back.publish(0.1)
             if(not self.station_keep):
             	return
+        orientation = data.orientation
+        rotation = self.euler_from_quaternion(orientation)
+        left_front = self.create_publisher(Float64, '/wamv/thrusters/left/thrust', 10)
+        left_back = self.create_publisher(Float64, '/wamv/thrusters/left/thrust', 10)
+        right_front = self.create_publisher(Float64, '/wamv/thrusters/right/thrust', 10)
+        right_back = self.create_publisher(Float64, '/wamv/thrusters/right/thrust', 10)
+        #print("target angle  : {0} radians / {1} degrees".format(self.target_angle, math.degrees(self.target_angle)))
+        #print("Current Rotation : {0} radians / {1} degrees".format(rotation, math.degrees(rotation)))
 
-    def imu_callback(self, data):
+        comp = math.degrees(rotation)
+        comp=comp%360
+        if(comp<0):
+            comp=360+comp
+        #print("comp: ",format(comp)) 
+		
+        #speed1 = 0.0
+        #speed2 = 0.0
+        angle_thr = self.ANGLE_THR
+        angle_diff = self.target_angle - rotation
+        if (self.initial_alignment or angle_diff>0.1):
+            self.turn_left
+        elif (self.initial_alignment or angle_diff<0.1):
+            self.turn_right
+        else:
+            self.move_forward_cmd
+"""        if (self.target_distance > self.MED_DIST):
+            speed1 = self.MAX_SPEED
+            if (self.initial_alignment or angle_diff > 0.1):
+                speed2 = self.MAX_SPEED  * -1
+            else:
+            #this slows down the speed by 10x, it could be more if you want
+                speed2 = self.MAX_SPEED  * -0.1
+                #previously, speed1 was not also changed, so it was imbalanced
+                speed1 = self.MAX_SPEED  * 0.1
+        elif (self.target_distance > self.SLO_DIST):
+            speed1 = self.MED_SPEED
+            if (self.initial_alignment or angle_diff > 0.1):
+                speed2 = self.MED_SPEED  * -1
+            else:
+                speed2 = self.MED_SPEED  * -0.1
+                #speed1 and speed2 have to change here
+                speed1 = self.MED_SPEED  * 0.1
+        else:
+            angle_thr = self.ANGLE_THR_P
+            speed1 = self.SLO_SPEED
+            #check this, I'm not sure if I changed it or it was like this originally
+            speed2 = self.SLO_SPEED * -1"""
+
+
+        if self.arrived:
+            angle_diff = self.keep_bearing - rotation
+            if(not self.waypoint_done and abs(angle_diff) > self.ANGLE_THR):
+                #print("entered final rotation")
+                speed1 = self.SLO_SPEED
+                speed2 = self.SLO_SPEED * -1
+            else:
+                #self.waypoint_done = True
+                if self.i < len(self.poses)-1:
+                    self.i = self.i + 1
+                    
+                self.arrived = False
+                self.target_lat = (self.poses[self.i].position._x)
+                self.target_lon = (self.poses[self.i].position._y)
+                speed1 = 0
+                speed2 = 0
+                
+                if(not self.station_keep):
+                    return
+
+        if ((angle_diff) > angle_thr):
+            msg_speed1 = Float64()
+            msg_speed2 = Float64()
+            msg_speed1.data = speed1
+            msg_speed2.data = speed2
+
+            right_front.publish(msg_speed1)
+            right_back.publish(msg_speed1)
+            left_front.publish(msg_speed2)
+            left_back.publish(msg_speed2)
+         #   print("turning anticlockwise")
+          #  print(speed1)
+           # print(speed2)
+
+        elif ((angle_diff) < -angle_thr):
+            msg_speed1 = Float64()
+            msg_speed2 = Float64()
+            #previously, the two following lines were backward, so msg_speed1 was speed 2 and msg_speed2 was speed1. However, since it was reversed again later, in the publishing messages section, it was incorrect.
+            msg_speed1.data = speed1
+            msg_speed2.data = speed2
+
+            # Publish the messages
+            right_front.publish(msg_speed2)
+            right_back.publish(msg_speed2)
+            left_front.publish(msg_speed1)
+            left_back.publish(msg_speed1)
+            #print("turning clockwise")
+            #print(speed2)
+            #print(speed1)
+        else:
+            if(not self.arrived):
+             #   print("go straight")
+                msg_speed = Float64()
+                #this previously said "self.speed1" which didn't exist in this code. 
+                msg_speed.data = speed1 * 15
+                right_front.publish(msg_speed)
+                right_back.publish(msg_speed)
+                left_front.publish(msg_speed)
+                left_back.publish(msg_speed)
+                self.initial_alignment = False
+
+    """def imu_callback(self, data):
         print("enter imu callback")
         print("i:" ,self.i)
         orientation = data.orientation
@@ -191,7 +300,7 @@ class GPS_Nav(Node):
                 right_back.publish(msg_speed)
                 left_front.publish(msg_speed)
                 left_back.publish(msg_speed)
-                self.initial_alignment = False
+                self.initial_alignment = False"""
 
                 
 
