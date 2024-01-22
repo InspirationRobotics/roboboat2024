@@ -81,14 +81,13 @@ class NavigationServer(Node):
 		if msg.data == self.stop_cmd:
 			self.send_cmd(self.stop_cmd)
 			self.receive_cmd()
-        """Turn Left"""
-        if msg.data == self.stop_cmd:
+		"""Turn Left"""
+		if msg.data == self.turn_left_cmd:
 			self.send_cmd(self.turn_left_cmd)
 			self.receive_cmd()
-        """Turn Right"""
-        if msg.data == self.stop_cmd:
+		"""Turn Right"""
+		if msg.data == self.turn_right_cmd:
 			self.send_cmd(self.turn_right_cmd)
-			self.receive_cmd()
 
 
 
