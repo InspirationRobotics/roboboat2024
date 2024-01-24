@@ -55,7 +55,9 @@ class GPS_Nav(Node):
         self.keep_lon = 0
         #self.gps_navigator(target_lat, target_lon)
         
-          
+    # self.lat_pub = self.create_publisher(Float64, '/wamv/sensors/gps/lat', 10)
+    #     self.lon_pub = self.create_publisher(Float64, '/wamv/sensors/gps/lon', 10)
+    #     self.hdg_pub = self.create_publisher(Float64, '/wamv/sensors/gps/hdg', 10)      
 
     def gps_callback(self, data):
         print("entergps callback")
@@ -63,7 +65,7 @@ class GPS_Nav(Node):
         self.current_lat = data.latitude
         self.current_lon = data.longitude
         boat_cmd= self.create_publisher(String, 'navigation_input', 10)
-        self.target_angle = self.get_bearing(self.current_lat, self.current_lon, self.target_lat, self.target_lon)
+        self.target_angle = self.get_bearing(self.current_lat, self.current_lon, self.target_lat, self.target_lon) #revisit
         #print("Current Lat: {0}, Current Lon: {1}".format(self.current_lat, self.current_lon))
         self.target_distance = ((self.target_lat - self.current_lat)**2 + (self.target_lon - self.current_lon)**2) ** (1/2)
         #print("Target distance: {0}".format(self.target_distance))
@@ -130,7 +132,7 @@ class GPS_Nav(Node):
         msg = String()
         dir_to_move = ""
 
-        if self.arrived:
+        if self.arrived: # the old function is arriving and changing heading
             angle_diff = self.keep_bearing - rotation
             if(not self.waypoint_done and abs(angle_diff) > self.ANGLE_THR):
                 #print("entered final rotation")
@@ -139,12 +141,14 @@ class GPS_Nav(Node):
                 pass
             else:
                 # Stop
-                dir_to_move = "s"
+                dir_to_move = "s" #for stop
                 if self.i < len(self.poses)-1:
+                    #i is waypoint # in list of waypoints; picking the next waypoint
+                    #need to change and make a clean write and implement PID
                     self.i = self.i + 1
                     
                 self.arrived = False
-                self.target_lat = (self.poses[self.i].position._x)
+                self.target_lat = (self.poses[self.i].position._x) 
                 self.target_lon = (self.poses[self.i].position._y)
                 
                 if(not self.station_keep):
@@ -168,6 +172,9 @@ class GPS_Nav(Node):
                 self.initial_alignment = False
         msg.data = dir_to_move
         boat_cmd.publish(msg)
+
+
+
 
     """def imu_callback(self, data):
         print("enter imu callback")
@@ -303,8 +310,9 @@ class GPS_Nav(Node):
         self.target_lat = lat
         self.target_lon = lon
         #self.test = self.create_publisher(Float32, "Hello", 10)
-        gps = self.create_subscription(NavSatFix, "/wamv/sensors/gps/gps/fix", self.gps_callback, 10)
-        #imu = self.create_subscription(Imu, "/wamv/sensors/imu/imu/data", self.imu_callback, 10)
+        gps = self.create_subscription(NavSatFix, "gps", self.gps_callback, 10) #check this ros node
+        
+
 
         
         #just a test, no function in the code
@@ -313,6 +321,39 @@ class GPS_Nav(Node):
         #while rclpy.ok():
         #    self.test.publish(msg)
         #    time.sleep(0.1)
+        def timer_callback(self):
+        #print("timer callback")
+        nmr = NMEAReader(self.stream)
+        (raw_data, parsed_data) = nmr.read()
+        #print("read")
+        #print (parsed_data)
+        try:
+            #self.lat_pub.publish(parsed_data.lat)
+            msg = Float64()
+            #print(msg)
+            msg.data = parsed_data.lat
+            print(msg)
+        except Exception as e:
+            #print(parsed_data)
+            #print("exception")
+            #print(e)
+            pass
+        try:
+            msg = Float64()
+            msg.data = parsed_data.lon
+            print(msg)
+        except:
+            pass
+        try:
+            msg = Float64()
+            msg.data = parsed_data.heading
+            #self.hdg_pub.publish(msg)
+            print(msg)
+        except Exception as e:
+            #print(parsed_data)
+            #print("exception")
+            #print(e)
+            pass    
 
     def waypoint_callback(self, data):
         print("entered waypoint callback")
@@ -541,7 +582,7 @@ class GPS_Nav(Node):
         yaw_z = math.atan2(t3, t4)
         return yaw_z
 
-    def get_bearing(self, lat2, long2, lat1, long1):
+    def get_bearing(self, lat2, long2, lat1, long1): #do calculations to verify if correct or opposite for northern hemisphere
         dLon = (long2 - long1)
         y = math.sin(dLon) * math.cos(lat2)
         x = math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(dLon)

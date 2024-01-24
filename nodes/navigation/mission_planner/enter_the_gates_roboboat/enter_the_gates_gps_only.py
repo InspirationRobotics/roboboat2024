@@ -78,9 +78,9 @@ class enter_the_gates_blind(mission_template):
     def estimate_path(self, start_point):
         desired_heading=0; #due North
         if current_heading-desired_heading>5 & current_heading-desired_heading<180: #degrees
-            self.turn_left
+            self.turn_left_cmd
         elif current_heading-desired_heading<355 & current_heading-desired_heading>180:
-            self.turn_right
+            self.turn_right_cmd
         else:
             self.move_forward_cmd
             
