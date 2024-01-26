@@ -14,7 +14,7 @@ class GPS_Reader(Node):
         # self.lat_pub = self.create_publisher(Float64, '/wamv/sensors/gps/lat', 10)
         # self.lon_pub = self.create_publisher(Float64, '/wamv/sensors/gps/lon', 10)
         # self.hdg_pub = self.create_publisher(Float64, '/wamv/sensors/gps/hdg', 10)
-        self.gps_pub = self.create_publisher(Float64, "gps", 10)
+        self.gps_pub = self.create_publisher(Float64, "gps", 10) #need to find data type for array of floats
         timer_period = 0.01 #seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
         self.i = 0
