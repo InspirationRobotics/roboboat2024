@@ -311,7 +311,10 @@ class GPS_Nav(Node):
         self.target_lon = lon
         #self.test = self.create_publisher(Float32, "Hello", 10)
         gps = self.create_subscription(NavSatFix, "gps", self.gps_callback, 10) #check this ros node
-        
+        gps_lat=gps.data.lat;
+        gps_long=gps.data.long;
+        gps_hdg=gps.data.hdg;
+
 
 
         
@@ -321,7 +324,8 @@ class GPS_Nav(Node):
         #while rclpy.ok():
         #    self.test.publish(msg)
         #    time.sleep(0.1)
-        def timer_callback(self):
+
+    def data_reader(self,gps):
         #print("timer callback")
         nmr = NMEAReader(self.stream)
         (raw_data, parsed_data) = nmr.read()

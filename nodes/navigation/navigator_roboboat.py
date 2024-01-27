@@ -99,14 +99,14 @@ class GPS_Nav(Node):
         # TODO: PID pass through / target
         # TODO: Rishi
         if ((angle_diff) > angle_thr):
-            self.torqeedo_cmd(300, -300, 0, 0)
+            dir_to_move = "a"
             print("turning clockwise")
         elif ((angle_diff) < -angle_thr):
-            self.torqeedo_cmd(-300, 300, 0, 0)
+            dir_to_move = "d"
             print("turning anticlockwise")
         else:
             if(not self.arrived):
-                self.torqeedo_cmd(300,300, 0, 0)
+                dir_to_move = "w"
                 print("go straight")
                 self.initial_alignment = False
 
