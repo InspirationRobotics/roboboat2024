@@ -19,6 +19,9 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
+import pynmeagps.NMEAReader as NMEAReader
+
+from asv.msg import GPSInfo
 
 #from vrx_gazebo.msg import Task #can't import this
 
