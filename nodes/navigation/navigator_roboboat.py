@@ -42,6 +42,7 @@ class GPS_Nav(Node):
         self.ANGLE_THR = 3 # angle in degrees
         self.arrived_pub = self.create_publisher(String, '/wamv/navigation/arrived', 10)
         self.mc_torqeedo = self.create_publisher(String, '/wamv/torqeedo/motor_cmd', 10)
+        self.navigation_input=self.create_publisher(String,'navigation_input',10)
         print("Navigator Init done")
 
     def torqeedo_cmd(self, pwrL, pwrR, posL, posR):
@@ -100,13 +101,19 @@ class GPS_Nav(Node):
         # TODO: Rishi
         if ((angle_diff) > angle_thr):
             dir_to_move = "a"
+            msg=dir_to_move
+            self.navigation_input.publish(msg)
             print("turning clockwise")
         elif ((angle_diff) < -angle_thr):
             dir_to_move = "d"
+            msg=dir_to_move
+            self.navigation_input.publish(msg)
             print("turning anticlockwise")
         else:
             if(not self.arrived):
                 dir_to_move = "w"
+                msg=dir_to_move
+                self.navigation_input.publish(msg)
                 print("go straight")
                 self.initial_alignment = False
 
@@ -148,7 +155,7 @@ class GPS_Nav(Node):
 
             while (not self.waypoint_done):
                time.sleep(0.1)
-               if(rospy.is_shutdown()):
+               if(rclpy.is_shutdown()):
                   break;
         self.all_done = True
 
