@@ -41,7 +41,6 @@ docker container ls # to see the running cros2 run ros2_serial_interface serial_
 docker exec -it CONTAINERID /bin/bash
 cd /
 bash ros_entrypoint.sh
-(source /opt/ros/humble/install/setup.bash)
 cd ~/ros2_serial_interface
 . install/setup.bash
 ros2 run ros2_serial_interface terminal_key_pub
