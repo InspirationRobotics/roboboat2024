@@ -33,6 +33,8 @@ class GPS_Nav(Node):
         self.target_lat = 0
         self.arrived = True
         self.print_cnt = 0           #count printing of lat,long info
+        self.lat_lon_cnt = 1
+        self.lat_lon_cnt = 1
         self.waypoint_done = False
         self.waypoint_started = False
         self.station_started = False
@@ -58,7 +60,7 @@ class GPS_Nav(Node):
         self.current_lon = data.data
 
     def lat_callback(self, data):
-        print("enter lat callback")
+        #print("enter lat callback")
         self.current_lat = data.data
         self.target_angle = self.get_bearing(self.target_lat, self.target_lon, self.current_lat, self.current_lon)
         #print("TARGET ANGLE "+str(math.degrees(self.target_angle)))
@@ -66,13 +68,15 @@ class GPS_Nav(Node):
         #Add counter to print lat lon every time print_cnt is 10
         self.print_cnt = self.print_cnt + 1
         if(self.print_cnt > 9):
-            print("Current Lat: {0}, Current Lon: {1}".format(self.current_lat, self.current_lon))
+            print("{0}. lat: {1} lon: {2}".format(self.lat_lon_cnt, self.current_lat, self.current_lon))
+            self.lat_lon_cnt = self.lat_lon_cnt + 1
             self.print_cnt = 0
+            
         self.target_distance = ((self.target_lat - self.current_lat)**2 + (self.target_lon - self.current_lon)**2) ** (1/2)
         #print("Target distance: {0}".format(self.target_distance))
         if(abs(self.target_distance) < self.MIN_DIST):
             self.arrived = True
-            print("Arrived")
+            #print("Arrived")
             pub_str = String()
             pub_str.data = 'Arrived'
             self.arrived_pub.publish(pub_str)
@@ -81,14 +85,14 @@ class GPS_Nav(Node):
                 self.waypoint_index = self.waypoint_index+1
                 self.target_lat = (self.waypoint_list[self.waypoint_index][0])
                 self.target_lon = (self.waypoint_list[self.waypoint_index][1])
-                print("Proceeding to next Waypoint {0} {1}".format(self.target_lat, " ", self.target_lon))
+                #print("Proceeding to next Waypoint {0} {1}".format(self.target_lat, " ", self.target_lon))
                 self.arrived = False
         else:
             self.arrived = False
 
 
     def hdg_callback(self, data):
-        print("enter  heading callback")
+        #print("enter  heading callback")
         #print("Waypoint # ", self.waypoint_index)
         orientation = data.data
         
@@ -111,7 +115,7 @@ class GPS_Nav(Node):
 
         compass = rotation
         compass=compass%360
-        print("compass: ",format(compass))
+        #print("compass: ",format(compass))
 
         angle_thr = self.ANGLE_THR
         angle_diff = self.target_angle - compass
@@ -122,7 +126,7 @@ class GPS_Nav(Node):
         if self.arrived:
             self.waypoint_done = True
             #publish the stop command
-            print("Arrived , not going further")
+            #print("Arrived , not going further")
             dir_to_move = "s"
             msg.data=dir_to_move
             self.navigation_input.publish(msg)
@@ -134,38 +138,38 @@ class GPS_Nav(Node):
             #publish CW command
             msg.data=dir_to_move
             self.navigation_input.publish(msg)
-            print("turning clockwise")
+            #print("turning clockwise")
 
             #Added Coach Amit's delay code
             time.sleep(0.3)
             dir_to_move = "w"
             msg.data=dir_to_move
             self.navigation_input.publish(msg)
-            print("continue after turning clockwise")
+            #print("continue after turning clockwise")
             
         elif ((angle_diff) < -angle_thr):
             dir_to_move = "a"
             #publish CCW/ACW command
             msg.data=dir_to_move
             self.navigation_input.publish(msg)
-            print("turning anticlockwise")
+            #print("turning anticlockwise")
             
             #Added Coach Amit's delay code
             time.sleep(0.3)
             dir_to_move = "w"
             msg.data=dir_to_move
             self.navigation_input.publish(msg)
-            print("continue after turning anti-clockwise")
+            #print("continue after turning anti-clockwise")
         else:
             if(not self.arrived):
                 dir_to_move = "w"
                 #publish go straight command
                 msg.data=dir_to_move
                 self.navigation_input.publish(msg)
-                print("go straight")
+             #   print("go straight")
                 self.initial_alignment = False
             else: #stop the boat
-                print("arrived / stop")
+              #  print("arrived / stop")
                 dir_to_move = "s"
                 msg.data=dir_to_move
                 self.navigation_input.publish(msg)
