@@ -129,17 +129,22 @@ class GPS_Nav(Node):
             msg.data=dir_to_move
             self.navigation_input.publish(msg)
             print("turning clockwise")
+
+            #Added Coach Amit's delay code
             time.sleep(0.5)
             dir_to_move = "w"
             msg.data=dir_to_move
             self.navigation_input.publish(msg)
             print("continue after turning clockwise")
+            
         elif ((angle_diff) < -angle_thr):
             dir_to_move = "a"
             #publish CCW/ACW command
             msg.data=dir_to_move
             self.navigation_input.publish(msg)
             print("turning anticlockwise")
+            
+            #Added Coach Amit's delay code
             time.sleep(0.5)
             dir_to_move = "w"
             msg.data=dir_to_move
