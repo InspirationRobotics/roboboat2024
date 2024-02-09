@@ -34,7 +34,6 @@ class GPS_Nav(Node):
         self.arrived = True
         self.print_cnt = 0           #count printing of lat,long info
         self.lat_lon_cnt = 1
-        self.lat_lon_cnt = 1
         self.waypoint_done = False
         self.waypoint_started = False
         self.station_started = False
