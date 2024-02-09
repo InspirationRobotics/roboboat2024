@@ -152,23 +152,20 @@ class GPS_Nav(Node):
             print("continue after turning anti-clockwise")
         else:
             if(not self.arrived):
-                if(angle_diff<180+self.ANGLE_THR & angle_diff>180-self.ANGLE_THR):
-                    dir_to_move = "x"
-                    msg.data=dir_to_move
-                    self.navigation_input.publish(msg)
-                    print("back up")
-                else:
-                    dir_to_move = "w"
-                    #publish go straight command
-                    msg.data=dir_to_move
-                    self.navigation_input.publish(msg)
-                    print("go straight")
-                    self.initial_alignment = False
-            else: #stop the boat
-                print("arrived / stop")
-                dir_to_move = "s"
+                dir_to_move = "w"
+                #publish go straight command
                 msg.data=dir_to_move
                 self.navigation_input.publish(msg)
+                print("go straight")
+                self.initial_alignment = False
+            else: #stop the boat
+                print("arrived / stop")
+                time.sleep(60)
+                dir_to_move="x"
+                msg.data=dir_to_move
+                self.navigation_input.publish(msg)
+                print("backing up")
+                
 
     def target_callback(self, data):
         self.target_lon = data.x
