@@ -129,6 +129,8 @@ class GPS_Nav(Node):
             msg.data=dir_to_move
             self.navigation_input.publish(msg)
             print("turning clockwise")
+
+            #Added Coach Amit's delay code
             time.sleep(0.5)
             dir_to_move = "w"
             msg.data=dir_to_move
@@ -140,6 +142,8 @@ class GPS_Nav(Node):
             msg.data=dir_to_move
             self.navigation_input.publish(msg)
             print("turning anticlockwise")
+
+            #Added Coach Amit's delay code
             time.sleep(0.5)
             dir_to_move = "w"
             msg.data=dir_to_move
