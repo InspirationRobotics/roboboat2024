@@ -130,18 +130,12 @@ class GPS_Nav(Node):
             return
 
         # TODO: PID pass through / target
-        if (angle_diff < 180+angle_thr & angle_diff > 180-angle_thr):
-            # going back; included this before considering options to turn forwards
-            dir_to_move = "x"
-            msg.data=dir_to_move
-            self.navigation_input.publish(msg)
-            print("backing up")
-        elif ((angle_diff) > angle_thr):
+        if  ((angle_diff) > angle_thr & angle_diff < 90):
             dir_to_move = "d"
             #publish CW command
             msg.data=dir_to_move
             self.navigation_input.publish(msg)
-            print("turning clockwise")
+            print("turning clockwise to go forward")
 
             #Added Coach Amit's delay code
             time.sleep(0.5)
@@ -150,12 +144,12 @@ class GPS_Nav(Node):
             self.navigation_input.publish(msg)
             print("continue after turning clockwise")
             
-        elif ((angle_diff) < -angle_thr):
+        elif ((angle_diff) < -angle_thr & angle_diff > -90):
             dir_to_move = "a"
             #publish CCW/ACW command
             msg.data=dir_to_move
             self.navigation_input.publish(msg)
-            print("turning anticlockwise")
+            print("turning anticlockwise to go forward")
             
             #Added Coach Amit's delay code
             time.sleep(0.5)
@@ -163,14 +157,55 @@ class GPS_Nav(Node):
             msg.data=dir_to_move
             self.navigation_input.publish(msg)
             print("continue after turning anti-clockwise")
+        elif ((angle_diff) > angle_thr & angle_diff > 90):
+            dir_to_move = "a"
+            #publish CCW/ACW command
+            msg.data=dir_to_move
+            self.navigation_input.publish(msg)
+            print("turning anticlockwise to go backward")
+            
+            #Added Coach Amit's delay code
+            time.sleep(0.5)
+            dir_to_move = "w"
+            msg.data=dir_to_move
+            self.navigation_input.publish(msg)
+            print("continue after turning anti-clockwise")
+        elif ((angle_diff) < -angle_thr & angle_diff < -90):
+            dir_to_move = "d"
+            #publish CW command
+            msg.data=dir_to_move
+            self.navigation_input.publish(msg)
+            print("turning clockwise to go backward")
+
+            #Added Coach Amit's delay code
+            time.sleep(0.5)
+            dir_to_move = "w"
+            msg.data=dir_to_move
+            self.navigation_input.publish(msg)
+            print("continue after turning clockwise")
         else:
             if(not self.arrived):
-                dir_to_move = "w"
-                #publish go straight command
-                msg.data=dir_to_move
-                self.navigation_input.publish(msg)
-                print("go straight")
-                self.initial_alignment = False
+                if (angle_diff < 180+angle_thr & angle_diff > 180-angle_thr):
+                    dir_to_move = "x"
+                    #publish go back command
+                    msg.data=dir_to_move
+                    self.navigation_input.publish(msg)
+                    print("go back")
+                    self.initial_alignment = False
+                else:
+                    dir_to_move = "w"
+                    #publish go straight command
+                    msg.data=dir_to_move
+                    self.navigation_input.publish(msg)
+                    print("go straight")
+                    self.initial_alignment = False
+                
+                #
+            ## going back; included this before considering options to turn forwards
+            #dir_to_move = "x"
+            #msg.data=dir_to_move
+            #self.navigation_input.publish(msg)
+            #print("backing up")
             else: #stop the boat
                 print("arrived / stop")
                 dir_to_move="s"
