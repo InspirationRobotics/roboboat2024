@@ -130,7 +130,13 @@ class GPS_Nav(Node):
             return
 
         # TODO: PID pass through / target
-        if ((angle_diff) > angle_thr):
+        if (angle_diff < 180+angle_thr & angle_diff > 180-angle_thr):
+            # going back; included this before considering options to turn forwards
+            dir_to_move = "x"
+            msg.data=dir_to_move
+            self.navigation_input.publish(msg)
+            print("backing up")
+        elif ((angle_diff) > angle_thr):
             dir_to_move = "d"
             #publish CW command
             msg.data=dir_to_move
@@ -167,11 +173,10 @@ class GPS_Nav(Node):
                 self.initial_alignment = False
             else: #stop the boat
                 print("arrived / stop")
-                time.sleep(60)
-                dir_to_move="x"
+                dir_to_move="s"
                 msg.data=dir_to_move
                 self.navigation_input.publish(msg)
-                print("backing up")
+                time.sleep(30)
                 
 
     def target_callback(self, data):
@@ -203,16 +208,16 @@ class GPS_Nav(Node):
         #simple case of 1 waypoint; removing for loop for reading all of the waypoints
         self.target_lat=(self.waypoint_list[0][0])
         self.target_lon=(self.waypoint_list[0][1])      
-        # for i in range(len(self.waypoint_list)):
-        #     self.target_lat = (self.waypoint_list[i][0])
-        #     self.target_lon = (self.waypoint_list[i][1])
-        #     self.initial_alignment = True
-        #     self.waypoint_done = False
-        #     self.arrived = False
-        #     self.initial_alignment = True
-        #     print("Waypoint:")
-        #     print(self.target_lat)
-        #     print(self.target_lon)
+        for i in range(len(self.waypoint_list)):
+            self.target_lat = (self.waypoint_list[i][0])
+            self.target_lon = (self.waypoint_list[i][1])
+            self.initial_alignment = True
+            self.waypoint_done = False
+            self.arrived = False
+            self.initial_alignment = True
+            print("Waypoint:")
+            print(self.target_lat)
+            print(self.target_lon)
 
             # while (not self.waypoint_done):
             #    time.sleep(0.1)
