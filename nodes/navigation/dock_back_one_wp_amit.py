@@ -68,6 +68,12 @@ class GPS_Nav(Node):
             self.arrived = True
             print("Arrived")
             msg=String()
+            dir_to_move = "s"
+            #publish stop command
+            msg.data=dir_to_move
+            self.navigation_input.publish(msg)
+            print("docking")
+            time.sleep(30)
             dir_to_move = "x"
             #publish go back command
             msg.data=dir_to_move
