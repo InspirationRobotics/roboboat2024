@@ -23,7 +23,8 @@ which sends serial messages to an Arduino with simple forwards/backwards on/off 
 **These files were also used across all missions:**
 - serial_server.py (inside mission_planner --> enter_the_gates_roboboat)
 - motor_mix.ino (inside mission_planner --> enter_the_gates_roboboat)
--
+- lat_lon_collection.py (for surveying)
+- 
 
 **These files were also used for bench tests**
  - terminal_key_pub.py (for testing motor_mix.ino; found in mission_planner --> enter_the_gates_roboboat)
