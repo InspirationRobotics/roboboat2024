@@ -7,6 +7,10 @@ We also had code for actuating the water pump for the Duck Wash mission, but did
 Each file run for each mission uses ROS to transfer data from our differential GPS. It uses this GPS data to calculate heading.
 Then, based on angle and radius thresholds for each waypoint, the mission files send commands to serial_server.py,
 which sends serial messages to an Arduino with simple forwards/backwards on/off controls for the thrusters.
+We settled on threshold angles of 8-10 degrees for Barco Polo. For Nav Channel and Speed Challenge,
+minimum distances were .00003 degrees (~9.5 ft) for reaching a waypoint. For Docking, minimum distance was .000015 deg.
+We were attempting .000012 degrees and .00001 degrees for Path, but had a hardware issue with one of the ESCs that prevented
+us verifying whether that was the correct threshold.
 
 **What we did not attempt**
 - PID control for motion
