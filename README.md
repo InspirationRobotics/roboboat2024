@@ -105,7 +105,7 @@ python3 -m black .
 ```
 
 
-## Roboboat Result
+## Roboboat 2024 Result
 
 **Overall RoboBoat accomplishments**
 We attempted 4 tasks in competition and completed 3, all using GPS navigation and surveying.
