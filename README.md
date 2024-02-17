@@ -104,6 +104,8 @@ If you have trouble running this command, you can use the following command inst
 python3 -m black .
 ```
 
+### Roboboat Result
+
 **Overall RoboBoat accomplishments**
 We attempted 4 tasks in competition and completed 3, all using GPS navigation and surveying.
 We did not attempt to use perception for our missions as would be required for many of the other missions.
