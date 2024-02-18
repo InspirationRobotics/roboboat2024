@@ -1,5 +1,8 @@
 # roboboat2024
 
+## NOTE: most up-to-date code on robotx-code-modified branch
+
+
 ## Notes for Migrating from ROS1 to ROS2 and Migrating from Robosub to Roboboat
 
 - Sensors: click [here](./sensors.md) to see the sensors we need to keep and not keep
