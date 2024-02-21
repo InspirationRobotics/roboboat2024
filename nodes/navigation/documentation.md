@@ -18,10 +18,10 @@ us verifying whether that was the correct threshold.
 - mission planning for the boat to do several missions in one code
 
 
-**We used files for each mission as follows:**
+**We directly called files for each mission as follows:**
 1. *Nav Channel*: gate_delay_thr_10.py
 2. *Follow the Path*: gate_delay_thr_10.py (attempted but not successful; need to test with all motors intact)
-3. *Docking*: dock_back_one_wp_amit.py (need to verify dock_back_two_wp_simple.py works as this is easier to integrate with other missions)
+3. *Docking*: dock_back_one_wp_amit.py (need to verify dock_back_two_wp_simple.py works as this is easier to integrate with other missions) *verify*
 4. *Speed Challenge*: gate_delay_thr_10.py
 
 **These files were also used across all missions:**
